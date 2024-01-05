@@ -1,0 +1,2 @@
+metaxploit = include_lib ( "/lib/metaxploit.so" )
+metaxploit.rshell_client ("[IP]",1222,"rootkit")

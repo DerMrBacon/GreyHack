@@ -1,0 +1,28 @@
+if params.len != 1 or params[0] == "-h" or params[0] == "--help" then exit("<b>Usage: "+program_path.split("/")[-1]+" [ip_address]</b>")
+address = params[0]
+router = get_router(address)
+if typeof(router) == "router" then
+	print("===Router Found===")
+	print("========Infos========")
+	print("BSSID: " + router.bssid_name)
+	print("ESSID: " + router.essid_name)
+	print("Public-ip: " + router.public_ip)
+	print("Local-IP: " + router.local_ip)
+	print("========Rules========")
+	firewall_list = router.firewall_rules
+	if firewall_list.len == 0 then print("No Firewallrules enabled on this router!")
+	for rule in firewall_list
+		print rule
+	end for
+	print("========Ports========")
+	ports = router.used_ports
+	if ports.len == 0 or ports == null then print("No Ports open on this router!")
+	print("found ports: " + ports.len)
+	for port in ports
+	    print("info: " + router.port_info(port))
+	end for
+end if
+exit("========End========")
+
+
+
