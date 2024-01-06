@@ -1,0 +1,38 @@
+if params.len != 1 or params[0] == "-h" or params[0] == "--help" then exit("<b>Usage: "+program_path.split("/")[-1]+" [path]</b>")
+
+cryptools = include_lib("/lib/crypto.so")
+if not cryptools then
+	cryptools = include_lib(current_path + "/crypto.so")
+end if
+if not cryptools then exit("Error: Can't find crypto.so library in the /lib path or the current folder")
+
+
+computer = get_shell.host_computer
+if computer == null then exit("Error: Computer not found!")
+
+file = computer.File(current_path + "/" + params[0])
+if file == null then exit("Error: Encrypt File not found")
+
+decrypted_filename = params[0] + "_decrypted"
+if computer.touch(current_path, decrypted_filename) then 
+	print("Success: File created!")
+else
+	exit("Error: Could not create file!")
+end if
+
+decrypted_file = computer.File(current_path + "/" + decrypted_filename)
+if decrypted_file == null then exit("Error: Decrypt File not found")
+
+toDecrypt = file.get_content.split("\n")
+payload = ""
+for content in toDecrypt
+	if content == "" then break
+	encryptPass = content.split(":")
+	decryptPass = cryptools.decipher(encryptPass[1])
+	print("User: " + encryptPass[0] + " Password: " + decryptPass)
+	payload = payload + encryptPass[0] + ":" + decryptPass + char(10)
+end for
+
+decrypted_file.set_content(payload)
+
+exit("Program end")

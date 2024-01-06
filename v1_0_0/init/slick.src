@@ -1,0 +1,10 @@
+metaxploit = include_lib("/lib/metaxploit.so")
+if not metaxploit then
+    metaxploit = include_lib(current_path + "/metaxploit.so")
+end if
+if not metaxploit then exit("Error: Can't find metaxploit library in the /lib path or the current folder")
+metaLib = metaxploit.load("/lib/init.so")
+if not metaLib then exit("Can't find " + "/lib/init.so")
+newPass = user_input("Enter new password: ")
+result = metaLib.overflow("0x668D1C06", "tinue", newPass)
+if not result then exit("Program ended")
